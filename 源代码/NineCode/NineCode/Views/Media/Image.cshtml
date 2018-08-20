@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "文章图片";
+    System.Data.DataTable lst = (System.Data.DataTable)ViewData["List"];
+    var data = new ViewDataDictionary();
+    data.Add("PageInfo", ViewData["PageInfo"]);
+    data.Add("Url", "/Media/Image/");
+    data.Add("Key", ViewData["Key"]);
+}
+<div class="input-group">
+    <input type="text" class="form-control" placeholder="您可以在这里输入文章ID或标题进行搜索！" id="keyvalue" />
+    <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id="search">
+            <span class="glyphicon glyphicon-search"></span>
+        </button>
+    </span>
+</div>
+<br />
+
+<div class="row">
+    @{
+        if (lst.Rows.Count != 0)
+        {
+            for (int i = 0; i < lst.Rows.Count; i++)
+            {
+        <div class="col-xs-6 col-sm-3 col-md-2">
+            <div class="thumbnail">
+                <img style="cursor: pointer;height:119px;" onclick="Zoom('@lst.Rows[i]["MUrl"].ToString()','@lst.Rows[i]["MName"].ToString()')" src="@lst.Rows[i]["MUrl"].ToString()">
+                <div class="caption">
+                    <b>No.@lst.Rows[i]["MID"].ToString()</b>
+                    <span class="pull-right" style="cursor: pointer;">
+                        <span class="text-danger glyphicon glyphicon-trash" onclick="Del('@lst.Rows[i]["MUrl"].ToString()')"></span>
+                        <span class="hidden-xs">&nbsp;</span>
+                        <span class="text-info glyphicon glyphicon-zoom-in hidden-xs" onclick="Zoom('@lst.Rows[i]["MUrl"].ToString()','@lst.Rows[i]["MName"].ToString()')"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+            }
+        }
+        
+    }
+
+
+</div>
+
+@* 分页导航 *@
+@Html.Partial("/Views/Shared/PageNav.cshtml", data)
+@Html.Partial("/Views/Shared/Modal.cshtml")
+<div class="hidden" id="msg">
+    <p>
+    <span class="lead">Name:</span>
+    <span class="lead" id="mname"></span>
+    </p>
+    <div class="embed-responsive embed-responsive-4by3">
+        <iframe class="embed-responsive-item" id="imgsrc"></iframe>
+    </div>
+    <br />
+    <div class="input-group">
+        <span class="input-group-addon"><b>Url:</b></span>
+        <input type="text" class="form-control text-primary" id="murl" readonly="true" >
+    </div>
+</div>
+<div class="hidden" id="delmsg">
+    <h4 style="color: #D9534F;"><b>是否确认删除该图片？</b></h4>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#MediaAdminChlid").addClass("in");
+        $("#ArticlePhoto").addClass("active");
+    });
+    function Zoom(url, name) {
+        $("#imgsrc").attr("src", url)
+        $("#mname").html(name);
+        $("#murl").attr("value", "http://" + location.host+ url);
+        showMsg("msg");
+    }
+    function Del(e) {
+        var url = encodeURI(e);
+        showMsg("delmsg", function () {
+            $.post("/Media/DelImage?url=" + url, function () {
+                reLoad();
+            });
+        });
+    }
+    $("#search").click(function () {
+        location.href = "/Media/Image/" + $("#keyvalue").val();
+    });
+</script>

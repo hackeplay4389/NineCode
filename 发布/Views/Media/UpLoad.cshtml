@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "上传文件";
+}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <br />
+        <br />
+        <div class="row ">
+            <div class="col-xs-12 col-sm-3"></div>
+            <div class="col-xs-12 col-sm-6">
+                <div class="input-group input-group-lg">
+                    <input type="text" class="form-control" readonly="true" placeholder="请选择本地需要上传的文件！" id="fileurl" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" id="selectfile">选择文件</button>
+                    </span>
+                </div>
+                <form enctype="multipart/form-data" method="post" id="fileform">
+                    <input class="hidden" type="file" id="upfile" name="test" />
+                </form>
+                <p class="text-warning h4"><b class="text-primary">Tip：</b>支持常见图片、视频、文档格式！(文件大小限制为20MB)</p>
+            </div>
+            <div class="col-xs-12 col-sm-3"></div>
+        </div>
+        <br />
+        <div class="row ">
+            <div class="col-xs-12 col-sm-3"></div>
+            <div class="col-xs-12 col-sm-6 text-center">
+                <img class="center-block" src="/Content/Image/Media/warning.png" id="imgtip" />
+                <h3 class="text-warning" id="msgtip">请选择您要上传文件！</h3>
+            </div>
+            <div class="col-xs-12 col-sm-3"></div>
+        </div>
+        <br />
+        <div class="row ">
+            <div class="col-xs-12 col-sm-3"></div>
+            <div class="col-xs-12 col-sm-6">
+                <div class="input-group ">
+                    <span class="input-group-addon" id="basic-addon3"><b>Url:</b></span>
+                    <input type="text" class="form-control" readonly="true" placeholder="点击右侧按钮可以复制文件地址！" id="resurl" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-warning copyurl" type="button" id="copyurl" data-clipboard-action="copy" data-clipboard-target="#resurl">
+                            <span class="glyphicon glyphicon-copy"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-3"></div>
+        </div>
+        <br />
+        <br />
+    </div>
+</div>
+@Html.Partial("/Views/Shared/Modal.cshtml")
+<div class="hidden" id="msg">
+    <h4 class="text-center"><b><span class="text-success ">已成功复制地址到剪贴板！</span></b></h4>
+</div>
+<script type="text/javascript" src="/Scripts/jquery.form.js"></script>
+<script type="text/javascript" src="/Scripts/clipboard.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#MediaAdminChlid").addClass("in");
+        $("#UpLoadFile").addClass("active");
+        var clipboard = new Clipboard('.copyurl');
+        clipboard.on('success', function () {
+            showMsg("msg");
+        });
+    });
+    $("#selectfile").click(function () {
+        $("#upfile").trigger("click");
+    });
+    $("#upfile").change(function () {
+        if ($(this).val() != "") {
+            $('#fileurl').val($(this).val());
+            changeTip("info", "正在上传文件，请稍候 ...");
+            $("#fileform").ajaxSubmit({
+                url: "/Media/UploadFile",
+                type: "post",
+                success: function (data) {
+                    if (data["res"] == "true") {
+                        changeTip("success", "恭喜您，文件上传成功！");
+                        $("#resurl").val("http://" + location.host + data["msg"]);
+                    }
+                    else {
+                        changeTip("danger", data["msg"]);
+                    }
+                },
+                error: function (data) {
+                    changeTip("danger", data);
+                }
+            });
+        }
+    });
+
+    function changeTip(type, msg) {
+        if (type == "info") {
+            $("#imgtip").attr("src", "/Content/Image/Media/info.gif");
+        }
+        else {
+            $("#imgtip").attr("src", "/Content/Image/Media/" + type + ".png");
+        }
+        $("#msgtip").removeClass();
+        $("#msgtip").addClass("text-" + type);
+        $("#msgtip").html(msg);
+    }
+</script>

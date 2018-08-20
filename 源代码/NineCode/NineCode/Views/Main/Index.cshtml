@@ -1,0 +1,64 @@
+﻿@{
+    Layout = "~/Views/Main/Theme.cshtml";
+    System.Collections.Hashtable site = NineCode.Site.Info();
+    ViewBag.Title = site["Title"];
+}
+<div class="container visible-xs">
+    <br />
+    <br />
+    <br />
+</div>
+<div class="container" style="margin-top: 13%; padding: 0px;">
+    <br class="visible-xs" />
+    <p style="text-align: center; font-size: 50px;">@site["Title"]</p>
+    <br class="hidden-xs" />
+    <br class="hidden-xs" />
+    <div class="col-sm-2 col-xs-0"></div>
+    <div class="col-sm-8 col-xs-12">
+        <br class="visible-xs" />
+        <div class="input-group input-group-lg">
+            <input type="text" class="form-control" id="keyvalue" />
+            <div class="input-group-btn">
+                <button class="btn btn-default" id="gosearch">
+                    <span class="hidden-xs">立即搜索</span>
+                    <span class="glyphicon glyphicon-search visible-xs"></span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-sm-2 col-xs-0"></div>
+</div>
+
+<div class="navbar  navbar-fixed-bottom hidden-xs">
+    <div class="container">
+        @Html.Partial("Footer")
+        <br />
+        <br />
+        <br />
+    </div>
+</div>
+<div class="visible-xs">
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    @Html.Partial("Footer")
+    <br />
+</div>
+
+
+<script type="text/javascript">
+    $("#gosearch").click(function () {
+        var key = $("#keyvalue").val().trim();
+        if (key == "")
+            return;
+        location.href = ("/Main/List/" + key + "?i=0");
+    });
+    document.body.onkeydown = function () {
+        if (event.keyCode == 13) {
+            $("#gosearch").trigger("click");
+        }
+    }
+</script>

@@ -1,0 +1,97 @@
+﻿@{
+    Layout = "~/Views/Main/Theme.cshtml";
+    System.Data.DataTable list = (System.Data.DataTable)ViewData["List"];
+    System.Collections.Hashtable info = (System.Collections.Hashtable)ViewData["Info"];
+    string key = ViewData["Key"].ToString();
+    ViewBag.Title = "“" + key + "”的搜索结果";
+    var data = new ViewDataDictionary();
+    data.Add("PageInfo", info);
+    data.Add("Url", "/Main/List/");
+    data.Add("Key", key);
+}
+<br />
+<br />
+<br />
+<br />
+<div class="container-fluid" style="padding:0px;">
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-10 col-xs-12">
+        <div class="well well-sm">
+            <h4>
+                <span class="glyphicon glyphicon-search"></span>
+                <b>&nbsp;站内搜索关键字 “ <span style="color: red;">@key</span> ” 的结果如下：
+                </b>
+                <span class="glyphicon glyphicon-globe text-left pull-right hidden-xs" style="color: #337AB7;"></span>
+            </h4>
+        </div>
+        <div class="div" id="list">
+            @if (int.Parse(info["Count"].ToString()) == 0)
+            {
+                <h3>很抱歉，没有找到与“<span style="color: red">@key</span>”相关的网页。</h3>
+            }
+            else
+            {
+                for (int i = 0; i < list.Rows.Count; i++)
+                {
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <span class="glyphicon glyphicon-send"></span>
+                        &nbsp;@list.Rows[i]["ATitle"].ToString()
+                        <a class="btn btn-primary btn-xs pull-right" href="~/Main/Details/@list.Rows[i]["AID"].ToString()" target="_blank">阅读全文
+                    <span class="glyphicon glyphicon-share-alt"></span>
+                        </a>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <p class="lead">
+                                @{string str = NineCode.Site.NoHTML(list.Rows[i]["AText"].ToString().Substring(0, 250));}
+                                @if (str.Length > 250)
+                                {
+                                    @(str)<b>...</b>                                    
+                                }
+                                else
+                                {
+                                    @(str)
+                                }
+                            </p>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="pull-left">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                                @DateTime.Parse(list.Rows[i]["ATime"].ToString()).ToString("yyyy年MM月dd日")
+                            </span>
+                            <span class="pull-right">
+                                <span class="glyphicon glyphicon-th-list"></span>
+                                @list.Rows[i]["CName"].ToString()
+                            </span>
+                            <br />
+                        </li>
+                    </ul>
+                </div>
+                }
+            }
+
+        </div>
+
+        @* 分页导航 *@
+        @Html.Partial("/Views/Shared/PageNav.cshtml", data);
+    </div>
+    <div class="col-sm-1 hidden-xs"></div>
+
+</div>
+
+<br />
+@{Html.RenderPartial("Footer");}
+<br />
+<script type="text/javascript">
+    $(function () {
+
+        //回到顶部
+        $.goup({
+            trigger: 100,
+            bottomOffset: 10,
+            locationOffset: 10,
+            titleAsText: true
+        });
+    });
+</script>

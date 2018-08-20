@@ -1,0 +1,102 @@
+﻿@{
+    Layout = "~/Views/Main/Theme.cshtml";
+    ViewBag.Title = Model.ATitle;
+    System.Collections.Hashtable ht = (System.Collections.Hashtable)ViewData["ht"];
+    System.Data.DataTable tags = (System.Data.DataTable)ViewData["Tags"];
+}
+@model NineCode.Models.Article
+
+
+<div class="container-fluid" style="padding: 0px;">
+    <br />
+    <br />
+    <br />
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10">
+        <div class="panel ">
+            <div class="panel-body">
+                <p class="h1 text-left text-primary "><strong>@Model.ATitle</strong></p>
+                <br />
+                <blockquote>
+                    <p>
+                        <span class="text-primary">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                            <span class="glyphicon glyphicon-console"></span>&nbsp;
+                        </span>
+                        <span class="h4 text-info">@(Model.ATime.ToString("yyyy年MM月dd日 HH:mm:ss"))</span>
+                    </p>
+                    <p>
+                        <span class="text-primary">
+                            <span class="glyphicon glyphicon-user"></span>
+                            <span class="glyphicon glyphicon-console"></span>&nbsp;
+                        </span>
+                        <span class="h4 text-info">@(Model.Users.UName)</span>
+                    </p>
+                    <p>
+                        <span class="text-primary">
+                            <span class="glyphicon glyphicon-th-list"></span>
+                            <span class="glyphicon glyphicon-console"></span>&nbsp;
+								<span class="h4 text-info">@(Model.Category.CName)</span>
+                        </span>
+                    </p>
+                </blockquote>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-1"></div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10">
+        <div class="panel panel-default">
+            <div class="panel-body" id="text">
+                @(new HtmlString(Model.AText))
+            </div>
+        </div>
+        <div>
+            <p>
+                <strong class="text-info">Tags： </strong>
+                @for (int i = 0; i < tags.Rows.Count; i++)
+                {
+                    <span class="label label-success" style="display: inline-block;">@tags.Rows[i]["TName"].ToString().Trim()</span>
+                }
+            </p>
+            <br />
+        </div>
+        <div>
+            <a class="btn btn-primary pull-left" href="../Details/@ViewData["Prev"]">
+                <span class="glyphicon glyphicon-menu-left" style="color: white;"></span>
+                上一页&nbsp;
+            </a>
+
+            <a class="btn btn-primary pull-right" href="../Details/@ViewData["Next"]">&nbsp;下一页
+								<span class="glyphicon glyphicon-menu-right" style="color: white;"></span>
+            </a>
+        </div>
+    </div>
+    <div class="col-sm-1"></div>
+</div>
+<br />
+<br />
+<br />
+@{Html.RenderPartial("Footer");}
+<br />
+<script type="text/javascript">
+    $(function () {
+        $("#text").find("img").each(function () {
+            $(this).removeAttr("height");
+            $(this).removeAttr("width");
+            if (!$(this).hasClass("img-responsive"))
+                $(this).addClass("img-responsive");
+        });
+        //回到顶部
+        $.goup({
+            trigger: 100,
+            bottomOffset: 10,
+            locationOffset: 10,
+            titleAsText: true
+        });
+    });
+</script>

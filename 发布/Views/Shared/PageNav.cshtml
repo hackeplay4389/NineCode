@@ -1,0 +1,61 @@
+﻿@{
+    System.Collections.Hashtable info = (System.Collections.Hashtable)ViewData["PageInfo"];
+    string url = ViewData["Url"].ToString();
+    string key = ViewData["Key"].ToString();
+}
+@if ((int)info["Pages"] > 1)
+{
+    <div class="text-center">
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default" id="first">
+                <span class="glyphicon glyphicon-step-backward"></span>
+            </button>
+            <button type="button" class="btn btn-default" id="prev">
+                <span class="glyphicon glyphicon-backward"></span>
+            </button>
+            <button type="button" class="btn btn-default">
+                <b id="count">@((int)info["Pages"])</b>
+                <b>-</b>
+                <b class="index">@((int)info["Current"] + 1)</b>
+            </button>
+            <button type="button" class="btn btn-default" id="next">
+                <span class="glyphicon glyphicon-forward"></span>
+            </button>
+            <button type="button" class="btn btn-default" id="last">
+                <span class="glyphicon glyphicon-step-forward"></span>
+            </button>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(function () {
+
+        $("#first").click(function () {
+            location.href = "@(url+key+"?nav=0")";
+        });
+        $("#prev").click(function () {
+            location.href = "@(url+key+"?nav="+((int)(info["Current"]) - 1).ToString())";
+        });
+        $("#next").click(function () {
+            location.href =  "@(url+key+"?nav="+((int)(info["Current"]) + 1).ToString())";
+        });
+        $("#last").click(function () {
+            location.href ="@(url+key+"?nav="+((int)(info["Pages"]) - 1).ToString())";
+        });
+
+        //分页按钮禁用
+        if ($(".index").text() == "1" || $(".index").text() == "0") {
+            $("#first").addClass("disabled");
+            $("#prev").addClass("disabled");
+            $("#first").unbind("click");
+            $("#prev").unbind("click");
+        }
+        if ($(".index").text() == $("#count").text()) {
+            $("#last").addClass("disabled");
+            $("#next").addClass("disabled");
+            $("#last").unbind("click");
+            $("#next").unbind("click");
+        }
+    });
+</script>

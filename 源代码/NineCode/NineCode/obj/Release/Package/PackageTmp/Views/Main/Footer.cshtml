@@ -1,0 +1,25 @@
+﻿@{ 
+    System.Collections.Hashtable site = NineCode.Site.Info();
+}
+<script type="text/javascript" src="/Scripts/jquery.goup.js"></script>
+<footer style="padding:5px">
+    <p style="text-align: center; font-size: 17px">
+        &copy; @(DateTime.Now.Year)
+        @site["Title"]
+        核心程序由
+            <a href="http://www.ninecms.com" style="text-decoration: none; color: #333" target="_blank"><b>NineCMS</b></a>
+        驱动&nbsp;
+            Theme&nbsp;By&nbsp;
+            <a href="http://www.jiuone.cn" style="text-decoration: none; color: #333;" target="_blank"><b>NineCode</b></a>
+    </p>
+    <p style="text-align: center; font-size: 15px;">
+        @(new HtmlString(site["Count"].ToString()))
+        <a href="http://www.miitbeian.gov.cn/" style="text-decoration: none; color: #333;" target="_blank">@site["ICP"]</a>
+        &nbsp;
+            <a href="http://www.beian.gov.cn" style="text-decoration: none; color: #333;" target="_blank">@site["Bei"]</a>
+        @if (!string.IsNullOrEmpty(site["Bei"].ToString()))
+        {
+            <img src="/Content/Image/bei.png" style="width: 18px; height: 18px;" /> 
+        }
+    </p>
+</footer>

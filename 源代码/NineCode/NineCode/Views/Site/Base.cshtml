@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "网站基本信息";
+}
+@model NineCode.Models.SiteInfo
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <h3 class="text-center text-info">网站基本信息</h3>
+            <hr />
+            <div class="col-sm-1 hidden-xs"></div>
+            <div class="col-sm-10 col-xs-12">
+                <form class="form-horizontal">
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">网站主标题：</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="在这里输入站点名称..." value="@Model.ITitle" id="ititle">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">网站副标题：</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="显示在标题后的小标题" value="@Model.ISmall" id="ismall">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">SEO信息：</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="2" style="resize: vertical;" placeholder="这里输入网站的关键字，多个使用英文逗号分隔开" id="iseo">@Model.ISEO</textarea>
+
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">ICP备案号：</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="在这里输入工信部备案号..." value="@Model.IICP" id="iicp">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">公安网备案：</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="在这里输入公安网备案号..." value="@Model.IBei" id="ibei">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">统计脚本：</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" rows="5" style="resize: vertical;" placeholder="在这里输入第三方的统计脚本..." id="icount">@Model.ICount</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            @Html.Partial("/Views/Shared/ShowTip.cshtml")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="btn btn-primary" id="upinfo">更新网站基本信息</button>
+                        </div>
+                    </div>
+                </form>
+                <br />
+                <br />
+            </div>
+            <div class="col-sm-1 hidden-xs"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#WebAdminChlid").addClass("in");
+        $("#WebInfo").addClass("active");
+    });
+    $("#upinfo").click(function () {
+        var info = {
+            ITitle: $("#ititle").val(),
+            ISmall: $("#ismall").val(),
+            ISEO: $("#iseo").val(),
+            IICP: $("#iicp").val(),
+            IBei: $("#ibei").val(),
+            ICount: $("#icount").val()
+        };
+        $.post("/Site/UpInfo", info, function (data) {
+            showTip(data["res"], data["msg"]);
+            if (data["res"] == "true") {
+                location.reload();
+            }
+        });
+    });
+</script>

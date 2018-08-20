@@ -1,0 +1,79 @@
+﻿@{
+    ViewBag.Title = "控制中心";
+    ViewBag.PanleTitle = "系统概述";
+    System.Data.DataTable info = (System.Data.DataTable)ViewData["Data"];
+    System.Data.DataTable db = (System.Data.DataTable)ViewData["DB"];
+}
+
+
+<div>
+    <div class="panel panel-default">
+
+        <div class="panel-body">
+            <h3 class="text-info">截止您上次登录<b class="text-success"> @info.Rows[0]["ULogin"] </b>共发表文章<b class="text-success"> <a href="/Article/List">@info.Rows[0]["Acount"]</a> </b>篇，上传文件<b class="text-success"> <a href="/Media/List">@info.Rows[0]["MCount"]</a> </b>个。</h3>
+        </div>
+    </div>
+</div>
+<div class="col-sm-6" style="padding: 1px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">程序信息</div>
+        <div class="panel-body text-info">
+            <ul style="list-style: none; font-size: 18px;">
+                <li><b>系统名称：</b>NineCode代码库系统</li>
+                <li><b>系统核心：</b>NineCMS内核</li>
+                <li><b>系统版本：</b>NineCode Verson 1.0.0</li>
+                <li><b>版本别名：</b>NineCode <b>追梦内测版</b></li>
+                <li><b>发布时间：</b>2018年2月10日</li>
+                <li><b>系统作者：</b>Jiuone 50966256@qq.com</li>
+                <li><b>系统官网：</b><a href="http://www.ninecms.com" target="_blank">http://www.ninecms.com</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-6" style="padding: 1px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">系统信息</div>
+        <div class="panel-body text-info">
+            <ul style="list-style: none; font-size: 19px;">
+                <li><b>网站主机IP：</b> @ViewData["IP"]</li>
+                <li><b>服务器系统：</b> @ViewData["OS"]</li>
+                <li>
+                <hr />
+                </li>
+                <li><b>数据库版本:</b> @db.Rows[0]["ver"].ToString().Split('-')[0].ToString()</li>
+                <li><b>数据库使用:</b> @db.Rows[0]["size"] KB</li>
+                <li><b>剩余可用量：</b>@db.Rows[0]["canuse"] KB</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<br style="clear: both;" />
+
+<div class="col-sm-6 hidden-xs" style="padding: 1px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">最新资讯</div>
+        <div class="panel-body">
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="http://app.ninecms.com/NineCode/post.html"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-6 hidden-xs" style="padding: 1px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">更新信息</div>
+        <div class="panel-body">
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="http://app.ninecms.com/NineCode/info.html"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<br style="clear: both;" />
+<script type="text/javascript">
+    $(function () {
+        $("#ArticleAdminChlid").addClass("in");
+    });
+</script>

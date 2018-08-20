@@ -1,0 +1,83 @@
+﻿@model NineCode.Models.Users
+
+@{
+    ViewBag.Title = ViewBag.PanleTitle = "个人信息";
+}
+<div class="row">
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>个人头像</b></div>
+            <div class="panel-body">
+                <img src="/Content/Image/unknown.png" alt="..." style="width: 100%; height: 100%; cursor: pointer;">
+                <hr />
+                <h4><b>登录用户：</b><span>@Model.UName</span></h4>
+                <h4><b>最近登录：</b><span>@Model.ULogin.ToString("yyyy-MM-dd")</span></h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>基本资料</b></div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">系统编号：</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="uid" readonly="true" value="@Model.UNum" >
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uname" class="col-sm-2 control-label">登录名称：</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="uname" readonly="true" value="@Model.UName">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="ustate" class="col-sm-2 control-label">账号状态：</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="ustate" readonly="true" value="@Model.UState">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="umail" class="col-sm-2 control-label">联系邮箱：</label>
+                        <div class="col-sm-9">
+                            <input type="email" class="form-control" id="umail" value="@Model.UMail" >
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="ublog" class="col-sm-2 control-label">个人博客：</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="ublog" value="@HttpContext.Current.Request.Url.Host" >
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="utell" class="col-sm-2 control-label">个人说明：</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" rows="5" style="resize: vertical;">我很懒什么都没留下...</textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary">更新个人资料</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#MyInfoChlid").addClass("in");
+        $("#UserInfo").addClass("active");
+    });
+</script>

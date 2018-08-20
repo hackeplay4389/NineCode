@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "绑定安全邮箱";
+}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <h4>邮箱信息：</h4>
+            <hr />
+            <br />
+            <div class="form-group">
+                <label for="uid" class="col-sm-2 control-label">安全邮箱地址：</label>
+                <div class="col-sm-9"> 
+                    <input type="email" class="form-control"  placeholder="您还未设置安全邮箱" readonly="true" id="nowmail" value="@ViewData["Mail"].ToString()">
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="uid" class="col-sm-2 control-label">系统操作授权：</label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="在这里输入邮箱收到的授权码..." id="code">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="getcode">获取<span class="hidden-xs">授权码</span></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <p class="col-sm-offset-2 col-sm-10 text-warning">注：如没有安全邮箱请先留空！</p>
+            <br />
+            <br />
+            <hr />
+            <br />
+            <h4>绑定邮箱：</h4>
+            <hr />
+            <br />
+            <div class="form-group">
+                <label for="uname" class="col-sm-2 control-label">绑定邮箱地址：</label>
+                <div class="col-sm-9">
+                    <input type="email" class="form-control" id="newmail" placeholder="请输入您的邮箱地址！" >
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="ustate" class="col-sm-2 control-label">验证登录密码：</label>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="pass" placeholder="请输入您的登录密码">
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-9">
+                    <div class="alert alert-danger hidden" id="divtip">
+                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                        <span id="tip"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" class="btn btn-primary" id="change">更新安全邮箱</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <br />
+    <p class="text-center text-info lead">&copy; 2018 NineCode代码管理系统&nbsp; Pwoer By <a href="http://www.ninecms.com" target="_blank">NineCode</a></p>
+
+@Html.Partial("/Views/Shared/Modal.cshtml")
+<div class="hidden" id="msgOk">
+    <h4><b><span class="text-success">验证码已发送至：<b id="msgmail" class="text-info"></b></span></b></h4>
+</div>
+<div class="hidden" id="msgNo">
+    <h4><b><span style="color: #D9534F;">操作失败，您未设置安全邮箱！</span></b></h4>
+</div>
+<div class="hidden" id="changeOk">
+    <h4><b><span class="text-success">安全邮箱更新成功！</span></b></h4>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#MyInfoChlid").addClass("in");
+        $("#SafeMail").addClass("active");
+    });
+    $("#getcode").click(function () {
+        $.post("/MyInfo/SendMail", function (data) {
+            if (data["res"] == "false") {
+                showMsg("msgNo");
+            }
+            else {
+                $("#msgmail").html(data["msg"]);
+                showMsg("msgOk");
+                $("#getcode").unbind("click");
+                $("#getcode").attr("disabled", "disabled");
+            }
+        });
+    });
+    $("#change").click(function () {
+        if ($("#nowmail").val()) {
+            if (!$("#code").val()) {
+                tip("请输入操作授权码！");
+                return;
+            }
+        }
+        if (!$("#newmail").val()) {
+            tip("请输入您的邮箱地址！");
+            return;
+        }
+        if (!$("#pass").val()) {
+            tip("请输入您的登录密码！");
+            return;
+        }
+        var u = {
+            UPass: $("#pass").val(),
+            UMail: $("#newmail").val(),
+            Ustate: $("#code").val()
+        };
+        $.post("/MyInfo/ChangeMail", u, function (data) {
+            if (data["res"] == "false") {
+                tip(data["msg"]);
+            }
+            else {
+                showMsg("changeOk","re","re");
+            }
+        });
+    });
+    function tip(msg) {
+        if ($("#divtip").hasClass("hidden")) {
+            $("#divtip").removeClass("hidden");
+        }
+        if (!$("#divtip").hasClass("show")) {
+            $("#divtip").addClass("show");
+        }
+        $("#tip").text(msg);
+    }
+</script>

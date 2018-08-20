@@ -1,0 +1,44 @@
+﻿@{ 
+    System.Collections.Hashtable site = NineCode.Site.Info();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta name="Title" content="@site["Title"]" />
+    <meta name="author" content="Jiuone" />
+    <meta name="description" content="@site["Small"]" />
+    <meta name="keywords" content="@site["SEO"]" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <title>@ViewBag.Title - @site["Small"]</title>
+    <link rel="stylesheet" type="text/css" href="/Content/CSS/bootstrap.min.css" />
+    <script type="text/javascript" src="/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fulid">
+                <div class="navbar-header">
+                    <a class="navbar-brand hidden-xs"></a>
+                    <img src="/Content/Image/logo.png" class="navbar-brand hidden-xs" />
+                    <a class="navbar-brand" href="/">@site["Title"]</a>
+                    <a class="navbar-toggle btn" href="/Account/Login">
+                        <span class="glyphicon glyphicon-user"></span>
+                    </a>
+                </div>
+                <ul class="nav navbar-nav navbar-right hidden-xs">
+                    <li><a href="/Account/Login">登录</a></li>
+                    <li><a></a></li>
+                    <li><a></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+</body>
+</html>
+

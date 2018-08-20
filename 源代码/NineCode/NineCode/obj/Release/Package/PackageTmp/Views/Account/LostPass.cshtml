@@ -1,0 +1,126 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>找回密码 — NineCode</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/Content/CSS/bootstrap.min.css" />
+</head>
+<body>
+    <br />
+    <div class="container-fluid" style="padding: 0px;">
+        <div class="hidden-xs">
+            <br />
+            <br />
+        </div>
+        <h2 class="text-center text-info">找回登录密码</h2>
+        <hr />
+        <div class="col-sm-2 hidden-xs"></div>
+        <div class="col-sm-8 col-xs-12">
+            <form class="form-horizontal">
+                <br />
+                <br />
+                <div class="form-group form-group-lg">
+                    <label for="uname" class="col-sm-3 control-label">登 录 名 ：</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="uname" placeholder="登录系统时所使用的名称！">
+                    </div>
+                </div>
+                <br />
+                <div class="form-group form-group-lg">
+                    <label for="uid" class="col-sm-3 control-label">授 权 码 ：</label>
+                    <div class="col-sm-7">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="在这里输入邮箱收到的授权码..." id="code">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary btn-lg" type="button" id="getcode">获取<span class="hidden-xs">授权码</span></button>
+                            </span>
+                        </div>
+                        <h4 class="text-danger">注意：您的账号必须已经绑定安全邮箱才可使用此功能！</h4>
+                    </div>
+                </div>
+                <br />
+                <div class="form-group form-group-lg">
+                    <label for="uname" class="col-sm-3 control-label">设置密码：</label>
+                    <div class="col-sm-7">
+                        <input type="password" class="form-control" id="upass" placeholder="设置新的登录密码...">
+                    </div>
+                </div>
+                <br />
+                <div class="form-group form-group-lg">
+                    <label for="uname" class="col-sm-3 control-label">确认密码：</label>
+                    <div class="col-sm-7">
+                        <input type="password" class="form-control" id="upass1" placeholder="重复设置的新密码...">
+                    </div>
+                </div>
+                <div class="form-group form-group-lg">
+                    <div class="col-sm-offset-3 col-sm-7">
+                        @Html.Partial("/Views/Shared/ShowTip.cshtml")
+                    </div>
+                </div>
+                <div class="form-group form-group-lg">
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button" class="btn btn-primary btn-lg" id="reset">&nbsp;&nbsp;重置<span class="hidden-xs">密码</span>&nbsp;&nbsp;</button>
+                        &nbsp;
+                    <a href="Login" class="btn btn-info btn-lg">&nbsp;&nbsp;<span class="hidden-xs">返回</span>登录&nbsp;&nbsp;</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-2 hidden-xs"></div>
+    </div>
+    <br />
+    <hr />
+    <br />
+    <br />
+    <p class="text-center text-info lead">&copy; 2018 NineCode代码管理系统&nbsp; Pwoer By <a href="http://www.ninecms.com" target="_blank">NineCMS</a></p>
+    <script type="text/javascript" src="/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $("#getcode").click(function () {
+            if (!$("#uname").val()) {
+                showTip("false", "请输入您的登录名！");
+                return;
+            }
+            var info = { UName: $("#uname").val() };
+            $.post("/Account/SendMail", info, function (data) {
+                showTip(data["res"], data["msg"]);
+            });
+        });
+        $("#reset").click(function () {
+            if (!$("#uname").val()) {
+                showTip("false", "请输入您的登录名！");
+                return;
+            }
+            if (!$("#code").val()) {
+                showTip("false", "请输入操作授权码！");
+                return;
+            }
+            if (!$("#upass").val()) {
+                showTip("false", "请输入设置的新密码！");
+                return;
+            }
+            if ($("#upass1").val() != $("#upass").val()) {
+                showTip("false", "两次输入的密码不一致！");
+                return;
+            }
+            var info = {
+                UName: $("#uname").val(),
+                UPass: $("#upass").val(),
+                UState: $("#code").val()
+            };
+            $.post("/Account/ResetPass", info, function (data) {
+                showTip(data["res"], data["msg"]);
+                if (data["res"] == "true") {
+                    setTimeout(function () {
+                        location.href = "/Account/Login";
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

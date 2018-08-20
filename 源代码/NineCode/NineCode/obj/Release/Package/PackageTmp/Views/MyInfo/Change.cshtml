@@ -1,0 +1,138 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "修改登录密码";
+}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <h4>验证信息：</h4>
+            <hr />
+            <br />
+            <div class="form-group">
+                <label for="uid" class="col-sm-2 control-label">原来登录密码：</label>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="upass" placeholder="现在所使用的登录密码...">
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="uid" class="col-sm-2 control-label">系统操作授权：</label>
+                <div class="col-sm-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="在这里输入邮箱收到的授权码..." id="code">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" id="getcode">获取<span class="hidden-xs">授权码</span></button>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <p class="col-sm-offset-2 col-sm-10 text-warning">注：如没有安全邮箱请先<a href="/MyInfo/Mail" class="text-warning">设置安全邮箱</a>！</p>
+            <br />
+            <br />
+            <hr />
+            <br />
+            <h4>设置密码：</h4>
+            <hr />
+            <br />
+            <div class="form-group">
+                <label for="uname" class="col-sm-2 control-label">新的登录密码：</label>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="newpass" placeholder="请输入6-20位的新密码">
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <label for="ustate" class="col-sm-2 control-label">确认新的密码：</label>
+                <div class="col-sm-9">
+                    <input type="password" class="form-control" id="newpass1" placeholder="再次输入您设置的密码">
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-9">
+                    <div class="alert alert-danger hidden" id="divtip">
+                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                        <span id="tip"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" class="btn btn-primary" id="change">立即修改密码</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@Html.Partial("/Views/Shared/Modal.cshtml")
+<div class="hidden" id="msgOk">
+    <h4><b><span class="text-success">验证码已发送至：<b id="msgmail" class="text-info"></b></span></b></h4>
+</div>
+<div class="hidden" id="msgNo">
+    <h4><b><span style="color: #D9534F;">操作失败，您未设置安全邮箱！</span></b></h4>
+</div>
+<div class="hidden" id="changeOk">
+    <h4><b><span class="text-success">密码修改成功,请重新登录！</span></b></h4>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#MyInfoChlid").addClass("in");
+        $("#ChangePass").addClass("active");
+    });
+    $("#getcode").click(function () {
+        $.post("/MyInfo/SendMail", function (data) {
+            if (data["res"] == "false") {
+                showMsg("msgNo");
+            }
+            else {
+                $("#msgmail").html(data["msg"]);
+                showMsg("msgOk");
+                $("#getcode").unbind("click");
+                $("#getcode").attr("disabled", "disabled");
+            }
+        });
+    });
+    $("#change").click(function () {
+        if (!$("#upass").val())
+        {
+            tip("请输入登录密码！");
+            return;
+        }
+        if(!$("#newpass").val())
+        {
+            tip("请设置新的密码！");
+            return;
+        }
+        if ($("#newpass").val() != $("#newpass1").val()) {
+            tip("两次输入的密码不一致！");
+            return;
+        }
+
+        var u = {
+            UPass: $("#upass").val(),
+            UName: $("#newpass").val(),
+            Ustate: $("#code").val()
+        };
+        $.post("/MyInfo/ResetPass",u,function (data) {
+            if (data["res"] == "false") {
+                tip(data["msg"]);
+            }
+            else {
+                showMsg("changeOk");
+                location.href = "/Account/OutLogin";
+            }
+        });
+    });
+    function tip(msg) {
+        if ($("#divtip").hasClass("hidden")) {
+            $("#divtip").removeClass("hidden");
+        }
+        if (!$("#divtip").hasClass("show")) {
+            $("#divtip").addClass("show");
+        }
+        $("#tip").text(msg);
+    }
+</script>

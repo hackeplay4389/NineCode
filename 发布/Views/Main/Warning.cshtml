@@ -1,0 +1,28 @@
+﻿@{
+    Layout = null;
+}
+@model NineCode.Models.SiteInfo
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>暂停服务...</title>
+</head>
+<body>
+    <div>
+        <br />
+        <br />
+        <br />
+        <br />
+        <h2 style="text-align:center">抱歉，暂停服务...</h2>
+        <br />
+        <h4 style="text-align:center">@Model.IWhyOff</h4>
+        <br />
+        <br />
+        <br />
+        <br />
+        <p style="text-align:center">&copy;@DateTime.Now.Year&nbsp;<a href="/Account/Login">Login</a>&nbsp;Power By <a href="http://www.ninecms.com" target="_blank">NineCMS</p>
+    </div>
+</body>
+</html>

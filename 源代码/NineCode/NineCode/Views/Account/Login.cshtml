@@ -1,0 +1,138 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>登录页面 - NineCode系统</title>
+    <link rel="stylesheet" type="text/css" href="/Content/CSS/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/CSS/admin.css" />
+</head>
+<body style="background-color: #F7F7F9;">
+
+    <br />
+    <h1 class="h1 text-center  text-info"><a href="/Main/Index">Code Manager System</a></h1>
+    <br />
+    <br />
+    <div class="container-fluid" style="padding:0px;">
+        <div class="col-sm-4 col-xs-0"></div>
+        <div class="col-sm-4 col-xs-12">
+            <div class="panel panel-primary panel-lg">
+                <div class="panel-heading text-center">
+                    <h3 class="strong">NineCode</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="panel-body">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon">账 号：</span>
+                            <input type="text" class="form-control" id="uname" placeholder="在这输入登录账号" />
+                        </div>
+                        <br />
+
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-addon">密 码：</span>
+                            <input type="password" id="upass" class="form-control" placeholder="在这输入登录密码" />
+                        </div>
+                        <br />
+
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-btn">
+                                <img class="showcode" src="/Account/VCode" id="code" />
+                            </span>
+                            <input type="text" class="form-control" id="vcode" placeholder="在这里输入验证码" />
+                            <span class="input-group-btn">
+                                <span class="btn btn-default" id="recode">
+                                    <span class="glyphicon glyphicon-refresh"></span>
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="col-xs-12 text-right">
+                            <a class="text-right" href="/Account/LostPass">找回密码</a>
+                        </div>
+                        <br />
+                        <br />
+                        <div class="alert alert-danger hidden" id="divtip">
+                            <span class="glyphicon glyphicon-exclamation-sign"></span>
+                            <span id="tip"></span>
+                        </div>
+                        <div class="row">
+                            <span class="col-xs-6 text-left">
+                                <input type="button" id="btnlogin" value=" 立即登录 " class="btn btn-primary btn-lg" />
+                            </span>
+                            <span class="col-xs-6 text-right">
+                                <input type="reset" value=" 清空填写 " class="btn btn-danger btn-lg" />
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-xs-0"></div>
+    </div>
+    <br />
+    <p class="text-center text-info lead">&copy; 2018 NineCode代码管理系统&nbsp; Pwoer By <a href="http://www.ninecms.com" target="_blank">NineCMS</a></p>
+
+    <script type="text/javascript" src="/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function tip(msg) {
+            if ($("#divtip").hasClass("hidden")) {
+                $("#divtip").removeClass("hidden");
+            }
+            if (!$("#divtip").hasClass("show")) {
+                $("#divtip").addClass("show");
+            }
+            $("#tip").text(msg);
+        }
+
+        $("#btnlogin").click(function () {
+            if (!$("#uname").val()) {
+                tip("请输入登录名称");
+                return;
+            }
+            if (!$("#upass").val()) {
+                tip("请输入登录密码");
+                return;
+            }
+            var u = {
+                "UName": $("#uname").val(),
+                "UPass": $("#upass").val()
+            };
+            $.post("LoginState/" + $("#vcode").val(),
+                u,
+                function (data) {
+                    if (data == "Code") {
+                        tip("验证码验证失败！");
+                        $("#code").attr("src", "/Account/VCode/" + Math.random());
+                    }
+                    else if (data == "State") {
+                        tip("您的账户已被禁用！");
+                    }
+                    else if (data == "false") {
+                        tip("账户或密码错误！");
+                        $("#code").attr("src", "/Account/VCode/" + Math.random());
+                    }
+                    else {
+                        location.href = "/Admin/Index";
+                    }
+                });
+        });
+
+        $("#recode").click(function () {
+            $("#code").attr("src", "/Account/VCode/" + Math.random());
+        });
+
+        document.body.onkeydown = function () {
+            if (event.keyCode == 13) {
+                $("#btnlogin").trigger("click");
+            }
+        }
+    </script>
+</body>
+</html>
+
+

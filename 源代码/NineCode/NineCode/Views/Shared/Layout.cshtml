@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="renderer" content="webkit">
+    <title>@ViewBag.Title - NineCode系统</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/Content/CSS/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/CSS/admin.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/CSS/simditor.css" />
+    <script type="text/javascript" src="/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <img src="/Content/Image/logo.png" class="navbar-brand" />
+                <a href="/Admin/Index" class="navbar-brand">NineCode 代码库系统
+                </a>
+            </div>
+            <div class="navbar-form navbar-right">
+                <a class="btn btn-info" href="/MyInfo/Base">
+                    <span class="glyphicon glyphicon-user"></span>
+                </a>
+                <a href="/Account/OutLogin" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-off"></span>
+                </a>
+                <a class="btn btn-success" href="/Main/Index" target="_blank">
+                    <span class="glyphicon glyphicon-home"></span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+
+                <div class="panel-group" id="LeftMenu" role="tablist" aria-multiselectable="true">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab">
+                            <h4 class="panel-title">
+                                <i style="color: #327AB8;" class="glyphicon glyphicon-dashboard"></i>
+                                &nbsp;<b class="text-primary">控制面板</b>
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="color: #327AB8;" role="tab" id="ArticleAdmin">
+                            <h4 class="panel-title">
+                                <a class="collapsed " role="button" data-toggle="collapse" href="#ArticleAdminChlid" data-parent="#LeftMenu" aria-expanded="false" aria-controls="CodeAdminChlid" style="text-decoration: none;">
+                                    <i class="glyphicon glyphicon-book"></i>
+                                    &nbsp;文章管理
+                                    <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="ArticleAdminChlid" class="panel-collapse collapse ">
+                            <div class="panel-body">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li role="presentation" id="ArticleEditor">
+                                        <a href="/Article/Editor"><i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp;添加文章</a>
+                                    </li>
+                                    <li role="presentation" id="ArticleList">
+                                        <a href="/Article/List"><i class="glyphicon glyphicon-tasks"></i>&nbsp;&nbsp;文章列表</a>
+                                    </li>
+                                    <li role="presentation" id="ArticleCategory">
+                                        <a href="/Manager/Category"><i class="glyphicon glyphicon-th-list"></i>&nbsp;&nbsp;内容分类</a>
+                                    </li>
+                                    <li role="presentation" id="ArticleTags">
+                                        <a href="/Manager/Tags"><i class="glyphicon glyphicon-tag"></i>&nbsp;&nbsp;文章标签</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="color: #327AB8;" role="tab" id="MediaAdmin">
+                            <h4 class="panel-title">
+                                <a class="collapsed " role="button" data-toggle="collapse" href="#MediaAdminChlid" data-parent="#LeftMenu" aria-expanded="false" aria-controls="FileAdminChlid" style="text-decoration: none;">
+                                    <i class="glyphicon glyphicon-file"></i>
+                                    &nbsp;文件管理
+                                    <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="MediaAdminChlid" class="panel-collapse collapse ">
+                            <div class="panel-body">
+                                <ul class="nav nav-pills nav-stacked">
+
+                                    <li role="presentation" id="ArticlePhoto">
+                                        <a href="/Media/Image"><i class="glyphicon glyphicon-picture"></i>&nbsp;&nbsp;文章图片</a>
+                                    </li>
+                                    <li role="presentation" id="UpLoadFile">
+                                        <a href="/Media/UpLoad"><i class="glyphicon glyphicon-cloud-upload"></i>&nbsp;&nbsp;上传文件</a>
+                                    </li>
+                                    <li role="presentation" id="FileList">
+                                        <a href="/Media/List"><i class="glyphicon glyphicon-hdd"></i>&nbsp;&nbsp;文件列表</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="color: #327AB8;" role="tab" id="UserAdmin">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" href="#UserAdminChlid" data-parent="#LeftMenu" aria-expanded="false" aria-controls="UserAdminChlid" style="text-decoration: none;">
+                                    <i class="glyphicon glyphicon-user"></i>
+                                    &nbsp;会员中心
+                                    <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="UserAdminChlid" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li role="presentation" id="AdminList">
+                                        <a href="/User/AdminList"><i class="glyphicon glyphicon-tasks"></i>&nbsp;&nbsp;网站管理</a>
+                                    </li>
+                                    <li role="presentation" id="AddUser">
+                                        <a href="/User/AddUser"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;添加会员</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="color: #327AB8;" role="tab" id="MyAdmin">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" href="#MyInfoChlid" data-parent="#LeftMenu" aria-expanded="false" aria-controls="MyAdminChlid" style="text-decoration: none;">
+                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                    &nbsp;个人设置
+                                    <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="MyInfoChlid" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li role="presentation" id="UserInfo">
+                                        <a href="/MyInfo/Base"><i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp;个人信息</a>
+                                    </li>
+                                    <li role="presentation" id="ChangePass">
+                                        <a href="/MyInfo/Change"><i class="glyphicon glyphicon-ok"></i>&nbsp;&nbsp;修改密码</a>
+                                    </li>
+                                    <li role="presentation" id="SafeMail">
+                                        <a href="/MyInfo/Mail"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;安全邮箱</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="color: #327AB8;" role="tab" id="WebAdmin">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" href="#WebAdminChlid" data-parent="#LeftMenu" aria-expanded="false" aria-controls="WebAdminChlid" style="text-decoration: none;">
+                                    <i class="glyphicon glyphicon-cog"></i>
+                                    &nbsp;网站设置
+                                    <span class="pull-right glyphicon glyphicon-chevron-down"></span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="WebAdminChlid" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li role="presentation" id="WebInfo">
+                                        <a href="/Site/Base"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;基本信息</a>
+                                    </li>
+                                    <li role="presentation" id="MailServer">
+                                        <a href="/Site/Mail"><i class="glyphicon glyphicon-envelope"></i>&nbsp;&nbsp;邮件服务</a>
+                                    </li>
+                                    <li role="presentation" id="WebOff">
+                                        <a href="/Site/Off"><i class="glyphicon glyphicon-off"></i>&nbsp;&nbsp;网站开关</a>
+                                    </li>
+                                    <li role="presentation" id="UseSql">
+                                        <a href="/Site/SQL"><i class="glyphicon glyphicon-globe"></i>&nbsp;&nbsp;SQL执行</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden-sm hidden-xs">
+                    <a href="http://app.ninecms.com/NineCode/bug.html" target="_blank">
+                        <img src="/Content/Image/debug.png" class="img-thumbnail" alt="问题反馈通道" />
+                    </a>
+                    <h5 class="text-info text-center">系统问题反馈通道</h5>
+                    <hr />
+                </div>
+            </div>
+            <div class="col-md-10">
+
+                <div class="panel panel-success">
+                    <div class="panel-heading "><b>@ViewBag.PanleTitle</b></div>
+                </div>
+                @RenderBody()
+                <br />
+                <footer>
+                    <p style="text-align: center; font-size: 17px">
+                        &copy; @(DateTime.Now.Year)&nbsp;
+            NineCode系统&nbsp;核心程序由
+            <a href="http://www.ninecms.com" style="text-decoration: none; color: #333" target="_blank"><b>NineCMS</b></a>
+                        驱动&nbsp;
+                    </p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "添加文章";
+}
+@model NineCode.Models.Article
+
+@*基本信息*@
+<div class="panel panel-default">
+    <div class="panel-heading">文章基本信息</div>
+    <div class="panel-body">
+        <div class="input-group">
+            <span class="input-group-addon">文章标题：</span>
+            <input type="text" id="atitle" value="@Model.ATitle" class="form-control" placeholder="在这里输入文章标题（不超过50个汉字）">
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">文章地址：</span>
+            <input type="text" class="form-control" readonly="true" value="http://@(HttpContext.Current.Request.Url.Authority)/Main/Details/@Model.AID">
+            <input type="hidden" id="aid" value="@Model.AID" />
+            <input type="hidden" id="unum" value="@Model.UNum" />
+            <div class="input-group-btn">
+                <a class="btn btn-primary" href="http://@(HttpContext.Current.Request.Url.Authority)/Main/Details/@Model.AID" target="_blank">直达文章 </a>
+            </div>
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">内容分类：</span>
+            <select class="form-control" id="category">
+                @{
+                    System.Data.DataTable dt = (System.Data.DataTable)ViewData["Category"];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                    <option class="opt" value="@dt.Rows[i][0].ToString()">@dt.Rows[i][1].ToString()</option>
+                    }
+                }
+            </select>
+        </div>
+        <br />
+        <div class="input-group">
+            <span class="input-group-addon">文章标签：</span>
+            <input type="text" class="form-control" id="tags" placeholder="在这里输入文章标签，使用一个@标识引导每个标签。" value="@ViewData["Tag"].ToString()" style="font-weight: bolder; color: #3C763D;">
+            <div class="input-group-btn">
+                <span class="btn btn-primary" id="addat">插入标识</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*编辑器*@
+<textarea id="editor" data-autosave="editor-content" autofocus required>
+    @(new HtmlString(Model.AText))
+</textarea>
+
+@*控制*@
+<div class="well">
+    <span class="lead">发布时间：@Model.ATime
+    </span>
+    <button class="btn btn-success pull-right" id="uparticle">
+        @if (ViewData["Type"].ToString() == "New")
+        {
+            <span class="btnup">发布文章</span>
+        }
+        else
+        {
+            <span class="btnup">保存修改</span>
+        }
+    </button>
+</div>
+<br />
+<script type="text/javascript" src="/Scripts/module.js"></script>
+<script type="text/javascript" src="/Scripts/hotkeys.js"></script>
+<script type="text/javascript" src="/Scripts/uploader.js"></script>
+<script type="text/javascript" src="/Scripts/simditor.js"></script>
+<script type="text/javascript" src="/Scripts/mobilecheck.js"></script>
+<script type="text/javascript">
+    var editor;
+    $(function () {
+        //模版激活
+        $("#ArticleAdminChlid").addClass("in");
+        $("#ArticleEditor").addClass("active");
+        //编辑器设置
+        document.getElementById("category").selectedIndex = 0;
+        var mToolbar, toolbar;
+        toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'];
+        mToolbar = ["bold", "underline", "strikethrough", "color", "ul", "ol", "blockquote"];
+        if (mobilecheck()) {
+            toolbar = mToolbar;
+        }
+        editor = new Simditor({
+            textarea: $('#editor'),
+            placeholder: '这里输入正文内容...',
+            defaultImage: '/Content/Image/unknown.png',
+            toolbar: toolbar,
+            upload: {
+                url: '/Media/UpImg/@Model.AID',  //文件上传的接口地址  
+                fileKey: 'upImg', //服务器端获取文件数据的参数名  
+                connectionCount: 1, //同时上传文件数
+                leaveConfirm: '文件正在上传中,请不要离开！',
+            }
+        });
+        //选中
+        if ($(".btnup").text() == "保存修改") {
+            $(".opt:contains('@Model.Category.CName.Trim()')").attr("selected", "selected");
+        }
+    });
+
+    $("#uparticle").click(function () {
+        //var c = document.getElementById("category");
+        //var index = c.selectedIndex;
+        //var v = c.options[index].value;
+        var cid = $("#category option:selected").val();
+        var a = {
+            "AID": $("#aid").val(),
+            "Atitle": $("#atitle").val(),
+            "AText": editor.getValue(),
+            "UNum": $("#unum").val(),
+            "CID": cid
+        };
+        $.ajax({
+            type: "POST",
+            url: "/Article/UpArticle/"+$("#tags").val(),
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(a),
+            dataType: "json",
+            success: function (data) {
+                location.href = data["url"];
+            }
+        });
+    });
+
+    $("#addat").click(function () {
+        $("#tags").val($("#tags").val() + "@(" @")");
+        $("#tags").focus();
+    });
+</script>

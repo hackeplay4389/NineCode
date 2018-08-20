@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "文章列表";
+    System.Data.DataTable list = (System.Data.DataTable)ViewData["List"];
+    var data = new ViewDataDictionary();
+    data.Add("PageInfo", ViewData["PageInfo"]);
+    data.Add("Url", "/Article/List/");
+    data.Add("Key", ViewData["Key"]);
+}
+
+<div class="input-group">
+    <span class="input-group-addon">内容分类</span>
+    <select class="form-control" id="category">
+        <option value="">全部文章</option>
+        @{
+            System.Data.DataTable lst = (System.Data.DataTable)ViewData["Category"];
+            for (int i = 0; i < lst.Rows.Count; i++)
+            {
+            <option value="@lst.Rows[i]["CID"].ToString()">@lst.Rows[i]["CName"].ToString()</option>
+            }
+        }
+    </select>
+    <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id="see">查看</button>
+    </span>
+</div>
+
+<br />
+<div class="panel panel-default">
+    <div class="panel-body">
+
+        <table class="table">
+
+            <thead class="row">
+                <tr>
+                    <th class="xs-col-1">#</th>
+                    <th class="xs-col-4">标题</th>
+                    <th class="xs-col-1 hidden-xs">作者</th>
+                    <th class="xs-col-2 hidden-xs">分类</th>
+                    <th class="xs-col-2 hidden-xs">日期</th>
+                    <th class="xs-col-2">操作</th>
+                </tr>
+            </thead>
+            <tbody class="row">
+                @{
+                    for (int i = 0; i < list.Rows.Count; i++)
+                    {
+                    <tr>
+                        <td class="xs-col-1">
+                            <span class="label label-info">
+                                @list.Rows[i]["AID"].ToString()
+                            </span>
+                        </td>
+                        <td class="xs-col-4">@list.Rows[i]["ATitle"].ToString()</td>
+                        <td class="xs-col-1 hidden-xs">@list.Rows[i]["UName"].ToString()</td>
+                        <td class="xs-col-2 hidden-xs">@list.Rows[i]["CName"].ToString()</td>
+                        <td class="xs-col-2 hidden-xs">@list.Rows[i]["ATime"].ToString()</td>
+                        <td class="xs-col-2">
+                            <a href="/Article/Editor/@list.Rows[i]["AID"].ToString()" target="_blank" class="btn btn-primary btn-xs">
+                                <span class="hidden-xs">编辑内容</span>
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            &nbsp;
+                        <button class="btn btn-danger btn-xs" onclick="Del(@list.Rows[i]["AID"].ToString())">
+                            <span class="hidden-xs">删除文章</span>
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        </td>
+                    </tr>
+                    }
+                }
+                <tr>
+                    <td colspan="6"></td>
+                </tr>
+            </tbody>
+        </table>
+        @* 分页导航 *@
+        @Html.Partial("/Views/Shared/PageNav.cshtml", data)
+
+    </div>
+</div>
+<div class="hidden" id="msg">
+    <h4 style="color: #D9534F;"><b>是否确认删除ID为<span class="text-primary" id="delid"></span>的文章？</b></h4>
+</div>
+@Html.Partial("/Views/Shared/Modal.cshtml")
+
+<script type="text/javascript">
+    $(function () {
+        $("#ArticleAdminChlid").addClass("in");
+        $("#ArticleList").addClass("active");
+
+        $("#see").click(function () {
+            var s = document.getElementById("category");
+            var index = s.selectedIndex;
+            var key = s.options[index].value;
+            location.href = "/Article/List/" + key + "?nav=0";
+        });
+    });
+    function Del(e) {
+        $("#delid").text("【" + e + "】");
+        showMsg("msg", function () {
+            $.get("/Article/DelArticle/" + e, function () {
+                document.location.reload();
+            });
+        });
+    }
+</script>

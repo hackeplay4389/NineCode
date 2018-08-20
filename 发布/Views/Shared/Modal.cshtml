@@ -1,0 +1,64 @@
+﻿<div class="modal fade" id="msg-box" tabindex="-1" role="dialog" aria-labelledby="msg-body" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="msg-body">系统提示：</h4>
+            </div>
+            <div class="modal-body" id="msg-content">
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="msg-close" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+                <button type="button" id="msg-sub" class="btn btn-primary" data-dismiss="modal">
+                    提交
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //参数说明
+    //msg_text:必填，在弹出层显示的内容的ID
+    //btn_sub:可选，点击弹出层 提交 按钮所执行的动作 "re" 执行刷新
+    //btn_close:可选，点击弹出层 关闭 按钮所执行的动作 "re" 执行刷新
+    function showMsg(msg_text, btn_sub, btn_close) {
+        var html = $("#" + msg_text).html();
+        $("#msg-content").append(html);
+        $("#msg-box").modal("show");
+        if (btn_sub != null) {
+            if (btn_sub == "re") {
+                $("#msg-sub").bind("click", function () {
+                    document.location.reload();
+                });
+            }
+            else {
+                $("#msg-sub").bind("click", btn_sub);
+            }
+        }
+        if (btn_close != null) {
+            if (btn_sub == "re") {
+                $("#msg-close").bind("click", function () {
+                    document.location.reload();
+                });
+            }
+            else {
+                $("#msg-close").bind("click", btn_close);
+            }
+        }
+    }
+
+    $('#msg-box').on('hidden.bs.modal', function () {
+        $("#msg-content").children().remove();
+        $("#msg-sub").unbind("click");
+        $("#msg-close").unbind("click");
+    })
+
+    //刷新页面方法
+    function reLoad() {
+        window.location.reload();
+    }
+</script>

@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "添加网站会员";
+}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <h3 class="text-center text-info">会员基本信息</h3>
+            <hr />
+            <div class="col-sm-2 hidden-xs"></div>
+
+            <div class="col-sm-7 col-xs-12">
+                <form class="form-horizontal">
+                    <br />
+                    <div class="form-group">
+                        <label for="uname" class="col-sm-3 control-label">登录名称：</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="uname" placeholder="登录系统时所使用的名称，不可重复！">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="uname" class="col-sm-3 control-label">登录密码：</label>
+                        <div class="col-sm-9">
+                            <input type="password" class="form-control" id="upass" placeholder="设置 6-20 位的账户登录密码！">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="uname" class="col-sm-3 control-label">确认密码：</label>
+                        <div class="col-sm-9">
+                            <input type="password" class="form-control" id="upass1" placeholder="再次输入为该账户设置的密码！">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="uname" class="col-sm-3 control-label">安全邮箱：</label>
+                        <div class="col-sm-9">
+                            <input type="email" class="form-control" id="umail" placeholder="找回密码时所需的邮箱地址，可为空！">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="uname" class="col-sm-3 control-label">账户类型：</label>
+                        <div class="col-sm-9">
+                            <select class="form-control">
+                                <option>网站普通管理</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="uname" class="col-sm-3 control-label">注册协议：</label>
+                        <div class="col-sm-9">
+                            <iframe class="form-control" style="height: 200px;" src="/Content/userpact.html"></iframe>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="pact">
+                                    同意协议
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9">
+                            <div class="alert alert-danger hidden" id="divtip">
+                                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                <span id="tip"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button type="reset" class="btn btn-warning">清空重填</button>
+                            &nbsp;
+                            <button type="button" class="btn btn-primary" id="add">立即注册</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-2 hidden-xs"></div>
+        </div>
+        <br />
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#UserAdminChlid").addClass("in");
+        $("#AddUser").addClass("active");
+    });
+    function tip(msg) {
+        if ($("#divtip").hasClass("hidden")) {
+            $("#divtip").removeClass("hidden");
+        }
+        if (!$("#divtip").hasClass("show")) {
+            $("#divtip").addClass("show");
+        }
+        $("#tip").text(msg);
+    }
+    $("#add").click(function () {
+        if (!$("#uname").val()) {
+            tip("请输入登录名称！");
+            return;
+        }
+        if (!$("#upass").val()) {
+            tip("请设置登录密码！");
+            return;
+        }
+        if ($("#upass1").val() != $("#upass").val()) {
+            tip("两次输入的密码不一致！");
+            return;
+        }
+        if (!$("#pact").checked == "checked") {
+            tip("请同意注册协议！");
+            return;
+        }
+        var user = {
+            UName: $("#uname").val(),
+            UPass: $("#upass").val(),
+            UMail: $("#umail").val()
+        };
+        $.post("/User/AddAdminUser", user, function (data) {
+            if (data["msg"] == "UName") {
+                tip("抱歉，该登录名称已存在！");
+            }
+            else if (data["msg"] == "true") {
+                location.href = "/User/AdminList";
+            }
+            else {
+                tip("系统异常，注册失败！");
+            }
+        });
+    });
+</script>

@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "内容分类";
+    System.Data.DataTable dt = (System.Data.DataTable)ViewData["Category"];
+}
+
+<div class="input-group">
+    <span class="input-group-addon">添加分类</span>
+    <input type="text" class="form-control" placeholder="在这里输入新的分类名称" id="txtnew">
+    <span class="input-group-btn">
+        <button class="btn btn-default" type="button" id="addcategory">
+            确定
+            <span class="glyphicon glyphicon-send"></span>
+        </button>
+    </span>
+</div>
+
+<br />
+<div class="panel panel-default">
+    <div class="panel-body">
+
+        <table class="table">
+
+            <thead class="row">
+                <tr>
+                    <th class="xs-col-1">#</th>
+                    <th class="xs-col-4">分类名称</th>
+                    <th class="xs-col-1">文章数量</th>
+                    <th class="xs-col-2">操作</th>
+                </tr>
+            </thead>
+            <tbody class="row">
+                @for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    <tr id="cid@(dt.Rows[i]["CID"].ToString())">
+                        <td class="xs-col-2">
+                            <span class="label label-info">
+                                @(dt.Rows[i]["CID"].ToString())
+                            </span>
+                        </td>
+                        <td class="xs-col-4">
+                            <b>
+                                @(dt.Rows[i]["CName"].ToString())
+                            </b>
+                        </td>
+                        <td class="xs-col-2">
+                            <span class="badge" id="acount@(dt.Rows[i]["CID"].ToString())">
+                                @(dt.Rows[i]["ACount"].ToString())
+                            </span>
+                        </td>
+                        <td class="xs-col-4">
+                            <button class="btn btn-primary btn-xs" onclick="Edit(@(dt.Rows[i]["CID"].ToString()),'@(dt.Rows[i]["CName"].ToString())')">
+                                <span class="hidden-xs">编辑</span>
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </button>
+                            &nbsp;
+                        <button class="btn btn-danger btn-xs" onclick="Del(@(dt.Rows[i]["CID"].ToString()))">
+                            <span class="hidden-xs">删除</span>
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        </td>
+                    </tr>
+                }
+                <tr class="hidden" id="editor">
+                    <td class="xs-col-2">
+                        <span class="label label-danger" id="cid"></span>
+                    </td>
+                    <td class="xs-col-4">
+                        <input type="text" class="form-control" style="height: 30%;" id="cname" />
+                        <small class="text-warning">Tip：在这里输入新的分类名称，点击确定保存更改！</small>
+                    </td>
+                    <td class="xs-col-2">&nbsp;
+                    </td>
+                    <td class="xs-col-4">
+                        <button class="btn btn-success btn-xs" id="sure">
+                            <span class="hidden-xs">确定</span>
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </button>
+                        &nbsp;
+                        <button class="btn btn-warning btn-xs" id="cancel">
+                            <span class="hidden-xs">取消</span>
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="hidden" id="msg">
+    <h4 style="color: #D9534F;"><b>是否确认删除ID为<span class="text-primary" id="delcid"></span>的分类？</b></h4>
+</div>
+<div class="hidden" id="msgOk">
+    <h4><b><span class="text-success">恭喜您，操作成功！</span></b></h4>
+</div>
+<div class="hidden" id="msgNo">
+    <h4><b><span style="color: #D9534F;">操作失败，该分类下有文章存在！</span></b></h4>
+</div>
+@Html.Partial("/Views/Shared/Modal.cshtml")
+
+<script type="text/javascript">
+    $(function () {
+        $("#ArticleAdminChlid").addClass("in");
+        $("#ArticleCategory").addClass("active");
+    });
+
+    $("#addcategory").click(function () {
+        if ($("#txtnew").val() == "")
+            return;
+        $.post("/Manager/AddClass/" + $("#txtnew").val(), function (data) {
+            if (data == "true") {
+                showMsg("msgOk", "re", "re");
+            }
+        });
+    });
+
+    function Del(id) {
+        var count = $("#acount" + id).text();
+        if (count > 0) {
+            showMsg("msgNo");
+        } else {
+            $(".msgOff").addClass("hidden");
+            $("#delcid").text("【" + id + "】");
+            showMsg("msg", function () {
+                $.post("/Manager/DelClass/" + id, function (data) {
+                    if (data == "true") {
+                        reLoad();
+                    }
+                });
+            });
+        }
+    }
+
+    function Edit(id, name) {
+        $("#cid").text(id);
+        $("#cname").val(name);
+        $("#cid" + id).after($("#editor"));
+        $("#editor").removeClass("hidden");
+        $("#cname").focus();
+    }
+
+    $("#cancel").click(function () {
+        $("#editor").addClass("hidden");
+    });
+
+    $("#sure").click(function () {
+        var id = $("#cid").text();
+        var name = $("#cname").val();
+        var url = encodeURI("/Manager/ChgClass/" + id + "?name=" + name);
+        $.post(url, function (data) {
+            if (data == "true") {
+                showMsg("msgOk", "re", "re");
+            }
+        });
+    });
+</script>

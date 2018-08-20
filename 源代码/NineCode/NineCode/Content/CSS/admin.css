@@ -1,0 +1,12 @@
+﻿.showcode {
+    width: 92px;
+    border: 1px solid #CCC;
+    height: 46px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-right:0px;
+}
+
+.bColor {
+    border:#A94442;
+}

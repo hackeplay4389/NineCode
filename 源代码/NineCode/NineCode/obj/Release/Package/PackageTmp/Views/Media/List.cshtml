@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "文件列表";
+
+    System.Data.DataTable lst = (System.Data.DataTable)ViewData["Data"];
+    var data = new ViewDataDictionary();
+    data.Add("PageInfo", ViewData["PageInfo"]);
+    data.Add("Url", "/Media/List/");
+    data.Add("Key", ViewData["Key"]);
+}
+<div class="row">
+    <div class="col-sm-4 col-xs-12">
+        <div class="input-group">
+            <span class="input-group-addon"><b>文件类型：</b></span>
+            <select class="form-control" id="filetype">
+                <option>全部文件</option>
+                @{
+                    System.Data.DataTable types = (System.Data.DataTable)ViewData["Type"];
+                    for (int i = 0; i < types.Rows.Count; i++)
+                    {
+                    <option value="T@(types.Rows[i][0].ToString())">@(types.Rows[i][0].ToString())文件</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <br class="show-xs" />
+    </div>
+
+    <div class="col-sm-8 col-xs-12">
+        <div class="input-group">
+            <span class="input-group-addon"><b>按文件名搜索：</b></span>
+            <input type="text" class="form-control" placeholder="在这里输入文件名进行搜索" id="keyvalue">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="search"><span class="glyphicon glyphicon-search"></span></button>
+            </span>
+        </div>
+    </div>
+</div>
+
+<br />
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class=".table-responsive">
+            <table class="table">
+                <thead class="row">
+                    <tr>
+                        <th class="xs-col-1"></th>
+                        <th class="xs-col-1">#</th>
+                        <th class="sm-col-3 xs-col-8">文件名称</th>
+                        <th class="xs-col-1 hidden-xs">文件类型</th>
+                        <th class="xs-col-3 hidden-xs">上传日期</th>
+                        <th class="xs-col-1 hidden-xs">上传人员</th>
+                        <th class="xs-col-2"></th>
+                    </tr>
+                </thead>
+                <tbody class="row">
+                    @{
+                        for (int i = 0; i < lst.Rows.Count; i++)
+                        {
+                        <tr>
+                            <td class="xs-col-1">
+                                <input type="checkbox" name="chk" value="@lst.Rows[i]["MID"].ToString()" /></td>
+                            <td class="xs-col-1">
+                                <span class="label label-info">
+                                    @lst.Rows[i]["MID"].ToString()
+                                </span>
+                            </td>
+                            <td class="sm-col-3 hidden-xs">@lst.Rows[i]["MName"].ToString()</td>
+                            <td class="xs-col-8 visible-xs">
+                                @{
+                            string name = lst.Rows[i]["MName"].ToString();
+                            if (name.Length > 10)
+                            {
+                                    @(name.Substring(0, 10) + "...")
+                            }
+                            else
+                            {
+                                    @(name)
+                            }
+                                }
+                            </td>
+                            <td class="xs-col-1 hidden-xs">@lst.Rows[i]["MType"].ToString()</td>
+                            <td class="xs-col-3 hidden-xs">@lst.Rows[i]["MTime"].ToString()</td>
+                            <td class="xs-col-1 hidden-xs">@lst.Rows[i]["UName"].ToString()</td>
+                            <td class="xs-col-2">
+
+                                <a href="@lst.Rows[i]["MUrl"].ToString()" target="_blank" class="btn btn-primary btn-xs">
+                                    <span class="hidden-xs">下载文件</span>
+                                    <span class="glyphicon glyphicon-download-alt"></span>
+                                </a>
+                                &nbsp;
+                            </td>
+                        </tr>
+                        }
+                    }
+                    @if (lst.Rows.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="8"></td>
+                        </tr>
+                    }
+                    else
+                    { 
+                        <tr>
+                            <td colspan="1">
+                                <input type="checkbox" id="chkall" />
+                            </td>
+                            <td colspan="7">
+                                <button class="btn btn-danger btn-xs" id="delfile">
+                                    <span>删除选中</span>
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @* 分页导航 *@
+        @Html.Partial("/Views/Shared/PageNav.cshtml", data)
+        @Html.Partial("/Views/Shared/Modal.cshtml")
+        <div class="hidden" id="delmsg">
+            <h4 style="color: #D9534F;"><b>是否确认删除选中的文件？</b></h4>
+        </div>
+        <div class="hidden" id="nullmsg">
+            <h4 style="color: #D9534F;"><b>提示：您未选择任何文件！</b></h4>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#MediaAdminChlid").addClass("in");
+        $("#FileList").addClass("active");
+    });
+    $("#search").click(function () {
+        var url = "/Media/List/K" + $("#keyvalue").val();
+        window.location.href = url;
+    });
+    $("#filetype").change(function () {
+        var type = $("#filetype option:selected").val();
+        window.location.href = "/Media/List/" + type;
+    });
+    $("#chkall").click(function () {
+        $("[name='chk']").each(function () {
+            $(this).trigger("click");
+        });
+    });
+    $("#delfile").click(function () {
+        var id = "";
+        $("[name='chk']").each(function () {
+            if (this.checked == true) {
+                id += "," + $(this).val();
+            }
+        });
+        if (id == "") {
+            showMsg("nullmsg");
+            return;
+        }
+        showMsg("delmsg", function () {
+            $.post("/Media/DelFile/" + id, function () {
+                reLoad();
+            });
+        });
+    });
+</script>
+

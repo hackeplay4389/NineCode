@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "文章标签";
+    System.Data.DataTable tags = (System.Data.DataTable)ViewData["Tags"];
+    var data = new ViewDataDictionary();
+    data.Add("PageInfo", ViewData["PageInfo"]);
+    data.Add("Url", "/Manager/Tags/");
+    data.Add("Key", "");
+}
+
+<div class="alert alert-warning" role="alert">
+    <b>Tip：新标签在文章中直接使用即可自动添加！</b>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <table class="table">
+            <thead class="row">
+                <tr>
+                    <th class="xs-col-1">#</th>
+                    <th class="xs-col-4">标签名称</th>
+                    <th class="xs-col-1 hidden-xs">文章数量</th>
+                    <th class="xs-col-2">操作</th>
+                </tr>
+            </thead>
+            <tbody class="row">
+                @for (int i = 0; i < tags.Rows.Count; i++)
+                {
+                    <tr id="tnum@(tags.Rows[i]["TNum"].ToString())">
+                        <td class="xs-col-2">
+                            <span class="label label-info">
+                                @(tags.Rows[i]["TNum"].ToString())
+                            </span>
+                        </td>
+                        <td class="xs-col-4">
+                            <b>
+                                @(tags.Rows[i]["TName"].ToString())
+                            </b>
+                        </td>
+                        <td class="xs-col-2 hidden-xs">
+                            <span class="badge">
+                                @(tags.Rows[i]["ACount"].ToString())
+                            </span>
+                        </td>
+                        <td class="xs-col-4">
+                            <button class="btn btn-primary btn-xs" onclick="Edit(@(tags.Rows[i]["TNum"].ToString()),'@(tags.Rows[i]["TName"].ToString())')">
+                                <span class="hidden-xs">编辑</span>
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </button>
+                            &nbsp;
+                        <button class="btn btn-danger btn-xs" onclick="Del(@(tags.Rows[i]["TNum"].ToString()))">
+                            <span class="hidden-xs">删除</span>
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        </td>
+                    </tr>
+                }
+                <tr class="hidden" id="editor">
+                    <td class="xs-col-2">
+                        <span class="label label-danger" id="cid"></span>
+                    </td>
+                    <td class="xs-col-4">
+                        <input type="text" class="form-control" style="height: 30%;" id="cname" />
+                        <small class="text-warning">Tip：在这里输入新的标签名称，点击确定保存更改！</small>
+                    </td>
+                    <td class="xs-col-2">&nbsp;
+                    </td>
+                    <td class="xs-col-4">
+                        <button class="btn btn-success btn-xs" id="sure">
+                            <span class="hidden-xs">确定</span>
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </button>
+                        &nbsp;
+                        <button class="btn btn-warning btn-xs" id="cancel">
+                            <span class="hidden-xs">取消</span>
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                </tr>
+            </tbody>
+        </table>
+        @* 分页导航 *@
+        @Html.Partial("/Views/Shared/PageNav.cshtml", data)
+    </div>
+</div>
+
+<div class="hidden" id="msg">
+    <h4 style="color: #D9534F;"><b>是否确认删除ID为<span class="text-primary" id="delcid"></span>的标签？</b></h4>
+</div>
+@Html.Partial("/Views/Shared/Modal.cshtml")
+
+<script type="text/javascript">
+    $(function () {
+        $("#ArticleAdminChlid").addClass("in");
+        $("#ArticleTags").addClass("active");
+    });
+
+    function Del(e) {
+        $("#delcid").text("【" + e + "】");
+        showMsg("msg", function () {
+            $.post("/Manager/DelTag/" + e, function () {
+                reLoad();
+            });
+        });
+    }
+
+    function Edit(id, name) {
+        $("#cid").text(id);
+        $("#cname").val(name);
+        $("#tnum" + id).after($("#editor"));
+        $("#editor").removeClass("hidden");
+        $("#cname").focus();
+    }
+
+    $("#cancel").click(function () {
+        $("#editor").addClass("hidden");
+    });
+
+    $("#sure").click(function () {
+        var id = $("#cid").text();
+        var name = $("#cname").val();
+        var url = encodeURI("/Manager/ChgTag/" + id + "?name=" + name);
+        $.post(url, function (data) {
+            if (data == "true") {
+                reLoad();
+            }
+        })
+    });
+</script>

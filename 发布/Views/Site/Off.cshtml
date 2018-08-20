@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "网站开关设置";
+}
+@model NineCode.Models.SiteInfo
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-1 hidden-xs"></div>
+            <div class="col-sm-10 col-xs-12">
+                <form>
+                    <br />
+                    <div class="form-group">
+                        <label class="h4" for="exampleInputEmail1">关站原因：</label>
+                        <textarea class="form-control" placeholder="在此输入关站原因(200字以内)..." rows="5" id="why">@Model.IWhyOff</textarea>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="rad" id="radYes" value="false">
+                            正常使用
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="rad" id="radNo" value="true">
+                            关站维护
+                        </label>
+                    </div>
+                    @Html.Partial("/Views/Shared/ShowTip.cshtml")
+                    <button type="button" class="btn btn-primary" id="sub">提交操作</button>
+                </form>
+                <br />
+                <br />
+            </div>
+            <div class="col-sm-1 hidden-xs"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#WebAdminChlid").addClass("in");
+        $("#WebOff").addClass("active");
+        var isoff=@(Model.IIsOff);
+        if(isoff==true)
+        {
+            $("#radNo").trigger("click");
+        }
+        else
+        {
+            $("#radYes").trigger("click");
+        }
+    });
+    $("#sub").click(function(){
+        var res=$("input[name='rad']:checked").val();
+        var info={
+            IIsOff:res,
+            IWhyOff:$("#why").val()
+        };
+        $.post("/Site/UpState",info,function(data){
+            showTip(data["res"], data["msg"]);
+            if (data["res"] == "true") {
+                location.reload();
+            }
+        });
+    
+    });
+</script>

@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "系统消息";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<div class="text-center">
+    @if (ViewBag.Type == "tip")
+    {
+        <div class="alert alert-success" role="alert">
+            <br />
+            <span class="h1">@ViewBag.Info</span>
+            <br />
+            <br />
+        </div>
+        
+    }
+    else if (ViewBag.Type == "warning")
+    {
+        <div class="alert alert-danger" role="alert">
+            <br />
+            <span class="h1">@ViewBag.Info</span>
+            <br />
+            <br />
+        </div>
+    }
+
+    <div class="panel panel-default">
+
+        <div class="panel-body">
+            <h3 class="text-info">( <span class="text-danger" id="num">4</span> ) 秒后返回上一步操作 ！</h3>
+            <br />
+            <a class="btn btn-primary btn-lg" href="@ViewBag.Before">立即返回</a>
+        </div>
+
+    </div>
+</div>
+<br />
+<br />
+<br />
+<br />
+
+<script type="text/javascript">
+    var i =3;
+    function run() {
+        $("#num").html(i);
+        if (i == 1) {
+            location.href = "@ViewBag.Before";
+        }
+        i--;
+        setTimeout("run()", 1000);
+    }
+    window.onload = run();
+   
+</script>

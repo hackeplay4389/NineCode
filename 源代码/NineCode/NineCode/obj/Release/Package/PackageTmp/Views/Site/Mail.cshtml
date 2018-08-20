@@ -1,0 +1,105 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "邮件服务器配置";
+}
+@model NineCode.Models.SiteConfig
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <h3 class="text-center text-info">邮件服务配置</h3>
+            <hr />
+            <div class="col-sm-1 hidden-xs"></div>
+            <div class="col-sm-10 col-xs-12">
+                <form class="form-horizontal">
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">SMTP主机：</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="SMTP邮件服务的主机地址，例：smtp.163.com" value="@Model.CfgServer" id="server">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">SMTP端口：</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="SMTP服务的端口，一般为：25" value="@Model.CfgPort" id="port">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">SMTP账号：</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" placeholder="SMTP服务认证账号，例test@163.com" value="@Model.CfgUser" id="user">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">SMTP密码：</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" placeholder="SMTP服务认证密码" value="@Model.CfgPass" id="pass">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">发件人邮箱：</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" placeholder="SMTP服务的发件人邮箱地址，一般同SMTP账号" value="@Model.CfgFrom" id="from">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <label for="uid" class="col-sm-2 control-label">收件人邮箱：</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" placeholder="测试邮箱服务的收件人邮箱地址" id="tomail">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            @Html.Partial("/Views/Shared/ShowTip.cshtml")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="button" class="btn btn-primary" id="send">发送<span class="hidden-xs">测试邮件</span></button>
+                            &nbsp;
+                            <button type="button" class="btn btn-primary" id="change">保存<span class="hidden-xs">配置信息</span></button>
+                        </div>
+                    </div>
+                </form>
+                <br />
+            </div>
+            <div class="col-sm-1 hidden-xs"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#WebAdminChlid").addClass("in");
+        $("#MailServer").addClass("active");
+    });
+    $("#send").click(function () {
+        if (!$("#tomail").val()) {
+            showTip("false", "请输入收件人邮箱！");
+            return;
+        }
+        $.post("/Site/TestSend?to=" + $("#tomail").val(), function (data) {
+            showTip(data["res"], data["msg"]);
+        });
+    });
+    $("#change").click(function () {
+        var cfg = {
+            CfgServer: $("#server").val(),
+            CfgPort: $("#port").val(),
+            CfgUser: $("#user").val(),
+            CfgPass: $("#pass").val(),
+            CfgFrom: $("#from").val()
+        };
+        $.post("/Site/ChangeMail", cfg, function (data) {
+            showTip(data["res"], data["msg"]);
+            if (data["res"] == "true")
+                location.reload();
+        })
+    });
+</script>

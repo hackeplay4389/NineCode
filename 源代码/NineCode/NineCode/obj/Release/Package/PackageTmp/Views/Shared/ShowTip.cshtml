@@ -1,0 +1,31 @@
+﻿<div class="alert" id="tip_div">
+    <span class="glyphicon glyphicon-exclamation-sign hidden" id="tip_tip"></span>
+    <span class="glyphicon glyphicon-ok hidden" id="tip_ok"></span>
+    <span id="tip_msg"></span>
+</div>
+
+<script type="text/ecmascript">
+    //提示框
+    function showTip(type, msg) {
+        //初始化
+        if ($("#tip_div").hasClass("alert-success"))
+            $("#tip_div").removeClass("alert-success");
+        if ($("#tip_div").hasClass("alert-danger"))
+            $("#tip_div").removeClass("alert-danger");
+        if ($("#tip_div").hasClass("hidden"))
+            $("#tip_div").removeClass("hidden");
+        if (!$("#tip_tip").hasClass("hidden"))
+            $("#tip_tip").addClass("hidden");
+        if (!$("#tip_ok").hasClass("hidden"))
+            $("#tip_ok").addClass("hidden");
+        $("#tip_msg").text(msg);
+        if (type == "false") {
+            $("#tip_div").addClass("alert-danger");
+            $("#tip_tip").removeClass("hidden");
+        }
+        else if (type == "true") {
+            $("#tip_div").addClass("alert-success");
+            $("#tip_ok").removeClass("hidden");
+        }
+    }
+</script>

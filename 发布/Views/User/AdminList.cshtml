@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = ViewBag.PanleTitle = "网站管理员列表";
+    System.Data.DataTable data = (System.Data.DataTable)ViewData["Data"];
+}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class=".table-responsive">
+            <table class="table">
+                <thead class="row">
+                    <tr>
+                        <th class="xs-col-1">#</th>
+                        <th class="xs-col-2">登录账号</th>
+                        <th class="xs-col-2 hidden-xs">安全邮箱</th>
+                        <th class="xs-col-1 ">文章数量</th>
+                        <th class="xs-col-2 hidden-xs">活跃时间</th>
+                        <th class="xs-col-1">状态</th>
+                        <th class="xs-col-3">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="row">
+                    @for (int i = 0; i < data.Rows.Count; i++)
+                    {
+                        <tr>
+                            <td class="xs-col-1">
+                                <span class="label label-info">
+                                    @data.Rows[i]["UNum"].ToString()
+                                </span>
+                            </td>
+                            <td class="xs-col-2">@data.Rows[i]["UName"].ToString()</td>
+                            <td class="xs-col-2 hidden-xs">@data.Rows[i]["UMail"].ToString()</td>
+                            <td class="xs-col-1 ">@data.Rows[i]["ACount"].ToString()篇</td>
+                            <td class="xs-col-2 hidden-xs">@data.Rows[i]["ULogin"].ToString()</td>
+                            <td class="xs-col-1">
+                                @if (data.Rows[i]["UState"].ToString() == "true")
+                                {
+                                    <b class="text-success">正常</b>
+                                }
+                                else
+                                {
+                                    <b class="text-danger">禁用</b>
+                                }
+                            </td>
+                            <td class="xs-col-3 mgr">
+                                <button class="btn btn-success btn-xs" value="S@(data.Rows[i]["UNum"].ToString())">
+                                    <span class="hidden-xs">启用</span>
+                                    <span class="glyphicon glyphicon-bell"></span>
+                                </button>
+                                &nbsp;
+                            <button class="btn btn-danger btn-xs" value="D@(data.Rows[i]["UNum"].ToString())">
+                                <span class="hidden-xs">禁用</span>
+                                <span class="glyphicon glyphicon-expand"></span>
+                            </button>
+                                &nbsp;
+                            <button class="btn btn-primary btn-xs" value="R@(data.Rows[i]["UNum"].ToString())">
+                                <span class="hidden-xs">重置</span>
+                                <span class="glyphicon glyphicon-refresh"></span>
+                            </button>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="8"></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        @Html.Partial("/Views/Shared/Modal.cshtml")
+        <div class="hidden" id="remsg">
+            <h4 style="color: #D9534F;"><b>是否重置账号【<b class="text-info" id="msgval"></b>】的密码为【<b class="text-info">123456</b>】？</b></h4>
+        </div>
+        <div class="hidden" id="errormsg">
+            <h4 style="color: #D9534F;"><b>抱歉，操作失败！</b></h4>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#UserAdminChlid").addClass("in");
+        $("#AdminList").addClass("active");
+    });
+    $(".mgr button").click(function () {
+        var val = $(this).val();
+        var type = val.substring(0, 1);
+        if (type == "R") {
+            $("#msgval").html(val.substring(1));
+            showMsg("remsg", function () {
+                $.post("/User/MgrAdmin/" + val, function (data) {
+                    if (data["msg"] == "true") {
+                        reLoad();
+                    }
+                    else {
+                        showMsg("errormsg");
+                    }
+                });
+            });
+        }
+        else {
+            $.post("/User/MgrAdmin/" + val, function (data) {
+                if (data["msg"] == "true") {
+                    reLoad();
+                }
+                else {
+                    showMsg("errormsg");
+                }
+            });
+        }
+    });
+</script>
